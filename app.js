@@ -1,8 +1,8 @@
 // Initialize dotenv
 require('dotenv').config()
 const ytdl = require('ytdl-core')
+const TikTokScraper=require('tiktok-scraper')
 const slugify = require('slugify')
-const TikTokScraper = require('tiktok-scraper');
 const fs = require('fs')
 const path = require('path')
 // Discord.js versions ^13.0 require us to explicitly define client intents
@@ -73,7 +73,7 @@ client.on('messageCreate', async (message) => {
         const videoAttachment = new AttachmentBuilder(filePath)
         console.log(videoAttachment)
 
-        await message.channel.send({
+        await message.reply({
           embeds: [embed],
           files: [videoAttachment],
         })
@@ -95,56 +95,6 @@ client.on('messageCreate', async (message) => {
   }
 })
 
-client.on('messageCreate', async (message) => {
-  if (message.content.startsWith('!indir')) {
-    const videoUrl = message.content.slice(6) // Başlangıçtan sonra gelen URL'yi alın
-    message.reply(`Video indirmesi başlatılıyor ${message.author.username}`)
 
-    try {
-      const info = await ytdl.getInfo(videoUrl)
-
-      const videoTitle = slugify(info.videoDetails.title, '_')
-      const videoStream = ytdl(videoUrl, {
-        quality: 'highestvideo',
-        filter: 'audioandvideo',
-      })
-      const downloadFolder = path.join(require('os').homedir(), 'Downloads')
-      const filePath = `${downloadFolder}/${videoTitle}.mp4`
-      const writeStream = fs.createWriteStream(filePath)
-      let downloaded = 0 // İndirilen veri miktarını takip etmek için bir değişken
-      const totalSize = info.videoDetails.lengthSeconds // Toplam video süresi
-      const progressInterval = setInterval(() => {
-        const progress = Math.round(downloaded / totalSize / 1000)
-
-        ;((totalSize - downloaded) / (downloaded || 1)) * (progress / 100)
-
-        message.reply(
-          `İndirme devam ediyor: ${videoTitle}\nİndirme Yüzdesi: ${progress.toFixed(
-            2,
-          )}
-          \nİndirilen Boyut: ${formatSize(downloaded)}`,
-        )
-        console.log(progress)
-      }, 100) // Her 5 saniyede bir güncelleme yap
-
-      videoStream.on('data', (chunk) => {
-        downloaded += chunk.length
-      })
-
-      videoStream.on('end', () => {
-        clearInterval(progressInterval)
-        message.reply(
-          ` ✅ İndirme tamamlandı: ${videoTitle}  Dosya Yolu: ${filePath}`,
-          message.author.username,
-        )
-      })
-
-      videoStream.pipe(writeStream)
-    } catch (error) {
-      console.error('Video indirme hatası:', error)
-      await message.channel.send('Video indirme sırasında bir hata oluştu.')
-    }
-  }
-})
 
 client.login(process.env.CLIENT_TOKEN)
