@@ -32,10 +32,10 @@ module.exports.ytVideoModule = async () => {
         const videoUrl = message.content.slice(8) // Başlangıçtan sonra gelen URL'yi alın
         console.log(`Video Url:${videoUrl}`)
         message.reply('Video downloading ✅')
-        console.log('Video is downloading rn ✅',message.id)
+        console.log('Video is downloading rn ✅', message.id)
         const info = await ytdl.getInfo(videoUrl)
         const videoTitle = slugify(info.videoDetails.title, '_')
-        
+
 
         // Embed mesajını oluştur
         const videoStream = ytdl(videoUrl, {
@@ -49,6 +49,34 @@ module.exports.ytVideoModule = async () => {
         const writeStream = fs.createWriteStream(filePath)
 
         videoStream.pipe(writeStream)
+
+
+        let downloadedBytes = 0;
+        let totalBytes = 0;
+        let interval;
+        videoStream.on('response', (response) => {
+          totalBytes = parseInt(response.headers['content-length'], 10);
+        });
+
+        videoStream.on('progress', (chunkLength, downloaded, total) => {
+          downloadedBytes += chunkLength;
+
+          if (!interval) {
+            interval = setInterval(() => {
+              const percentage = (`%${((downloadedBytes / totalBytes) * 100).toFixed(2)}`);
+              console.log(`Downloaded: ${downloadedBytes} bytes (${percentage}%)`);
+              console.log(`Total Byte: ${totalBytes} `);
+              console.log(`Remaining: ${totalBytes - downloadedBytes} bytes`);
+              message.reply(`Converting... %${percentage} `)
+            }, 3000); // Her 1 saniyede bir yazdırmak için 1000ms (1 saniye) kullanılır
+          }
+
+          if (downloadedBytes >= totalBytes) {
+            clearInterval(interval);
+            interval = null;
+          }
+        });
+        
 
         writeStream.on('finish', async () => {
           const embed = new EmbedBuilder()
