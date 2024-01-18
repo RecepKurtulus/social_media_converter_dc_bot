@@ -28,41 +28,69 @@ module.exports.ytVideoModule = async () => {
   client.on('messageCreate', async (message) => {
     try {
       if (message.content.startsWith('!youtube')) {
-        // Özel bir komut kullanarak embed mesajını oluşturabilirsiniz
-        const videoUrl = message.content.slice(8) // Başlangıçtan sonra gelen URL'yi alın
+        //Getting message's user data
+        const user = message.author;
+        const taggedUser = `<@${user.id}>`;
+        //Downloading video to our storage
+        const videoUrl = message.content.slice(8) 
         console.log(`Video Url:${videoUrl}`)
-        message.reply('Video downloading ✅')
-        console.log('Video is downloading rn ✅',message.id)
+        const firstReply=await message.reply('Video downloading ✅')
+        console.log('Video is downloading rn ✅', message.id)
         const info = await ytdl.getInfo(videoUrl)
         const videoTitle = slugify(info.videoDetails.title, '_')
-        
-
-        // Embed mesajını oluştur
         const videoStream = ytdl(videoUrl, {
           quality: 'highestvideo',
           filter: 'audioandvideo',
         })
         console.log('Video is downloading rn ✅')
 
+        //Writing video to our storage
         const downloadFolder = path.join(require('os').homedir(), 'Downloads')
         const filePath = `${downloadFolder}/${videoTitle}.mp4`
         const writeStream = fs.createWriteStream(filePath)
-
         videoStream.pipe(writeStream)
+
+        //Sending about converting progress
+        let downloadedBytes = 0;
+        let totalBytes = 0;
+        let interval;
+        videoStream.on('response', (response) => {
+          totalBytes = parseInt(response.headers['content-length'], 10);
+        });
+        videoStream.on('progress', (chunkLength, downloaded, total) => {
+          downloadedBytes += chunkLength;
+
+          if (!interval) {
+            interval = setInterval(() => {
+              const percentage = (`%${((downloadedBytes / totalBytes) * 100).toFixed(2)}`);
+              firstReply.edit(`Converting... ${percentage} `)
+              console.log(`Downloaded: ${downloadedBytes} bytes (${percentage}%)`);
+              console.log(`Total Byte: ${totalBytes} `);
+              console.log(`Remaining: ${totalBytes - downloadedBytes} bytes`);
+              
+            }, 1000); 
+          }
+
+          if (downloadedBytes >= totalBytes) {
+            clearInterval(interval);
+            interval = null;
+          }
+        });
+        
 
         writeStream.on('finish', async () => {
           const embed = new EmbedBuilder()
-            .setColor(Math.floor(Math.random() * 16777215).toString(16)) // Embed mesajının rengi
+            .setColor('#621A55') 
             .setTitle(`${videoTitle} downloaded successfully ✅ `)
             .setURL(videoUrl)
             .setDescription(
-              'If you like the bot, you can move us up by commenting on our top.gg page 😏',
+              'im the biggest dolphin slayer',
             )
-
+          //Uploading video file as a embed message
           const videoAttachment = new AttachmentBuilder(filePath)
           console.log(videoAttachment)
-
-          await message.reply({
+          await firstReply.edit({
+            content:taggedUser,
             embeds: [embed],
             files: [videoAttachment],
           })
