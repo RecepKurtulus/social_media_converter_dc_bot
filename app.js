@@ -1,4 +1,11 @@
-const { ytVideoModule } = require("./modules/ytVideoModule");
-
+//const { ytVideoModule } = require("./modules/Youtube/ytVideoModule");
+//const {downloadTikTokVideo}=require("./modules/TikTok/tiktokDataScraper");
 //For yt video request
-ytVideoModule();
+//ytVideoModule();
+//tiktokVideoModule();
+
+const { tiktokVideoModule } = require("./modules/TikTok/tiktokVideoModule");
+
+//downloadTikTokVideo();
+
+tiktokVideoModule()
