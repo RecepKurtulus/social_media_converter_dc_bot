@@ -44,13 +44,13 @@ module.exports.tiktokVideoModule = async () => {
 
           })
           
-            fs.rm(filePath, (error) => {
-                if (error) {
-                  console.log('❌ Dosya silinirken bir hata oluştu:', error);
-                } else {
-                  console.log('Video başarıyla diskten silindi✅');
-                }
-              }); 
+            //fs.rm(filePath, (error) => {
+                //if (error) {
+                  //console.log('❌ Dosya silinirken bir hata oluştu:', error);
+                //} else {
+                  //console.log('Video başarıyla diskten silindi✅');
+                //}
+              //}); 
 
             
           
