@@ -11,6 +11,7 @@ const {
   GatewayIntentBits,
   AttachmentBuilder,
   EmbedBuilder,
+  ActivityType,
 } = require('discord.js')
 
 module.exports.tiktokVideoModule = async () => {
@@ -24,8 +25,10 @@ module.exports.tiktokVideoModule = async () => {
 
   client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`)
-    client.user.setStatus('Burdayım be burdayım !')
+    client.user.setActivity('activity',);
+
   })
+
 
   client.on('messageCreate', async (message) => {
     try {
@@ -44,13 +47,13 @@ module.exports.tiktokVideoModule = async () => {
 
           })
           
-            //fs.rm(filePath, (error) => {
-                //if (error) {
-                  //console.log('❌ Dosya silinirken bir hata oluştu:', error);
-                //} else {
-                  //console.log('Video başarıyla diskten silindi✅');
-                //}
-              //}); 
+            fs.rm(filePath, (error) => {
+                if (error) {
+                  console.log('❌ Dosya silinirken bir hata oluştu:', error);
+                } else {
+                  console.log('Video başarıyla diskten silindi✅');
+                }
+              }); 
 
             
           
