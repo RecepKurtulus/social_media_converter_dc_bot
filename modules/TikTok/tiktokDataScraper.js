@@ -24,7 +24,7 @@ module.exports.downloadTikTokVideo = async (videoUrl) => {
       const embedVideoUrl =
         response.data.aweme_list[0].video.play_addr.url_list[0]
       console.log(embedVideoUrl)
-      const downloadFolder = path.join(require('os').homedir(), 'Downloads')
+      const downloadFolder = path.resolve('./Downloads')
       const filePath = `${uniqueFilename(downloadFolder, 'doppel')}.mp4`
       //const filePath = `${downloadFolder}/sasa.mp4`
 
