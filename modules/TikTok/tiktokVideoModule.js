@@ -12,6 +12,7 @@ const {
   AttachmentBuilder,
   EmbedBuilder,
   ActivityType,
+
 } = require('discord.js')
 
 module.exports.tiktokVideoModule = async () => {
@@ -40,7 +41,7 @@ module.exports.tiktokVideoModule = async () => {
         const filePath = await downloadTikTokVideo(videoUrl);
         console.log(`Modüldeki filePath: ${filePath}`)
         const videoAttachment =  new AttachmentBuilder(filePath)
-          console.log(videoAttachment)
+        console.log(videoAttachment)
             message.reply({
             content: 'Video Converted!',
             files: [videoAttachment],
