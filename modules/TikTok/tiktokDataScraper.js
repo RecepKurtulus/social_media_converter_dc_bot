@@ -23,14 +23,12 @@ module.exports.downloadTikTokVideo = async (videoUrl) => {
         const htmlContent = videoReqToHtml.data
         const $ = cheerio.load(htmlContent)
 
-        // __UNIVERSAL_DATA_FOR_REHYDRATION__ script etiketini seç
+        // __UNIVERSAL_DATA_FOR_REHYDRATION__ script tag
         const scriptTag = $('script#__UNIVERSAL_DATA_FOR_REHYDRATION__')
 
-        // Script etiketinin içindeki JSON verisini çek
+        // Get data from script tag
         const jsonData = JSON.parse(scriptTag.html())
 
-        // JSON verisini kullanabilirsiniz
-        //console.log(jsonData)
 
         const videoWebUrl = jsonData['__DEFAULT_SCOPE__']['seo.abtest'].canonical
         console.log(videoWebUrl);
@@ -77,8 +75,8 @@ const videoDownloader = async(videoUrl)=>{
     const embedVideoUrl = response.data.aweme_list[0].video.play_addr.url_list[0]
     console.log(embedVideoUrl)
     const downloadFolder = path.resolve('./Downloads')
+    //Unique name generator for files
     const filePath = `${uniqueFilename(downloadFolder, 'doppel')}.mp4`
-    //const filePath = `${downloadFolder}/sasa.mp4`
 
     const videoStream = await axios.get(embedVideoUrl, {
       headers: {

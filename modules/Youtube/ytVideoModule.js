@@ -84,7 +84,7 @@ module.exports.ytVideoModule = async () => {
             .setTitle(`${videoTitle} downloaded successfully ✅ `)
             .setURL(videoUrl)
             .setDescription(
-              'im the biggest dolphin slayer',
+              'test :p',
             )
           //Uploading video file as a embed message
           const videoAttachment = new AttachmentBuilder(filePath)
