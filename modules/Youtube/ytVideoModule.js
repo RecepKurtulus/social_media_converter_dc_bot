@@ -45,7 +45,7 @@ module.exports.ytVideoModule = async () => {
         console.log('Video is downloading rn ✅')
 
         //Writing video to our storage
-        const downloadFolder = path.join(require('os').homedir(), 'Downloads')
+        const downloadFolder =path.resolve('./Downloads')
         const filePath = `${downloadFolder}/${videoTitle}.mp4`
         const writeStream = fs.createWriteStream(filePath)
         videoStream.pipe(writeStream)

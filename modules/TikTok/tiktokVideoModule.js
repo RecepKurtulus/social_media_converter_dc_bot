@@ -26,7 +26,7 @@ module.exports.tiktokVideoModule = async () => {
 
   client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`)
-    client.user.setActivity('activity',);
+    client.user.setActivity('🤖 STILL TESTING 🤖',);
 
   })
 
