@@ -3,19 +3,21 @@ const cheerio = require('cheerio')
 const uniqueFilename = require('unique-filename')
 const fs = require('fs')
 const path = require('path')
+const headers={
+  'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        Referer: 'https://www.tiktok.com/',
+}
 module.exports.downloadTikTokVideo = async (videoUrl) => {
   return new Promise(async (resolve, reject) => {
+    
     console.log(videoUrl)
     try {
       //For mobile video sharing
       if (videoUrl.includes('https://vm.tiktok.com')) {
         console.log('Mobil link is downloading')
         const videoReqToHtml = await axios.get(videoUrl, {
-          headers: {
-            'User-Agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-            Referer: 'https://www.tiktok.com/',
-          },
+          headers:headers,
           responseType: 'json',
         })
 
@@ -65,11 +67,7 @@ const videoDownloader = async(videoUrl)=>{
       videoId
     console.log(downloadUrl)
     const response = await axios.get(downloadUrl, {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-        Referer: 'https://www.tiktok.com/',
-      },
+      headers: headers,
       responseType: 'json',
     })
     const embedVideoUrl = response.data.aweme_list[0].video.play_addr.url_list[0]
@@ -79,11 +77,7 @@ const videoDownloader = async(videoUrl)=>{
     const filePath = `${uniqueFilename(downloadFolder, 'doppel')}.mp4`
 
     const videoStream = await axios.get(embedVideoUrl, {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-        Referer: 'https://www.tiktok.com/',
-      },
+      headers: headers,
       responseType: 'stream',
     })
     // returns something like: '/tmp/my-test-51a7b48d'
@@ -104,6 +98,5 @@ const videoDownloader = async(videoUrl)=>{
     }
   })
   
-    
 
 }

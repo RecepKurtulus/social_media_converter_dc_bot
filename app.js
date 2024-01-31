@@ -1,10 +1,36 @@
-const { ytVideoModule } = require("./modules/Youtube/ytVideoModule");
-//const {downloadTikTokVideo}=require("./modules/TikTok/tiktokDataScraper");
-//For yt video request
-ytVideoModule();
-//tiktokVideoModule();
+require('dotenv').config()
 
-const { tiktokVideoModule } = require("./modules/TikTok/tiktokVideoModule");
+const {createSlashCommands, executeSlashCommands}=require('./src/slashCommands')
+const {
+  Events,
+  SlashCommandBuilder,
+  Client,
+  GatewayIntentBits,
+  AttachmentBuilder,
+  EmbedBuilder,
+  ActivityType,
+} = require('discord.js')
+const clientLogin = async () => {
+  const client = new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.MessageContent,
+    ],
+  })
 
+  client.on('ready', async (client) => {
+    console.log(`✅Logged in as ${client.user.tag}!`)
+    client.user.setActivity('Interactionsları yedim')
+    await createSlashCommands(client)
+    
+  })
+  client.on('interactionCreate', async (interaction) => {
+    await executeSlashCommands(client,interaction)
+  })
 
-tiktokVideoModule()
+  client.login(process.env.CLIENT_TOKEN)
+  
+}
+
+clientLogin()

@@ -5,34 +5,18 @@ const fs = require('fs')
 const path = require('path')
 // Discord.js versions ^13.0 require us to explicitly define client intents
 const {
-  Client,
-  GatewayIntentBits,
   AttachmentBuilder,
   EmbedBuilder,
 } = require('discord.js')
 
-module.exports.ytVideoModule = async () => {
-  const client = new Client({
-    intents: [
-      GatewayIntentBits.Guilds,
-      GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.MessageContent,
-    ],
-  })
-
-  client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`)
-    client.user.setStatus('Burdayım be burdayım !')
-  })
-
-  client.on('messageCreate', async (message) => {
+module.exports.ytVideoModule = async (message,client) => {
     try {
-      if (message.content.startsWith('!youtube')) {
+      
         //Getting message's user data
-        const user = message.author;
+        const user = message.user;
         const taggedUser = `<@${user.id}>`;
         //Downloading video to our storage
-        const videoUrl = message.content.slice(8) 
+        const videoUrl = message.options.getString('link')
         console.log(`Video Url:${videoUrl}`)
         const firstReply=await message.reply('Video downloading ✅')
         console.log('Video is downloading rn ✅', message.id)
@@ -63,7 +47,7 @@ module.exports.ytVideoModule = async () => {
           if (!interval) {
             interval = setInterval(() => {
               const percentage = (`%${((downloadedBytes / totalBytes) * 100).toFixed(2)}`);
-              firstReply.edit(`Converting... ${percentage} `)
+              message.editReply(`Converting... ${percentage} `)
               console.log(`Downloaded: ${downloadedBytes} bytes (${percentage}%)`);
               console.log(`Total Byte: ${totalBytes} `);
               console.log(`Remaining: ${totalBytes - downloadedBytes} bytes`);
@@ -85,11 +69,14 @@ module.exports.ytVideoModule = async () => {
             .setURL(videoUrl)
             .setDescription(
               'test :p',
-            )
+            );
+            
+            
+
           //Uploading video file as a embed message
           const videoAttachment = new AttachmentBuilder(filePath)
           console.log(videoAttachment)
-          await firstReply.edit({
+          await message.editReply({
             content:taggedUser,
             embeds: [embed],
             files: [videoAttachment],
@@ -104,11 +91,10 @@ module.exports.ytVideoModule = async () => {
             console.log('❌There is a problem about deleting file:', error)
           }
         })
-      }
+      
     } catch (error) {
       console.log(error.stack)
     }
-  })
+  
 
-  client.login(process.env.CLIENT_TOKEN)
 }
