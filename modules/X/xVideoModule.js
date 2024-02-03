@@ -7,7 +7,7 @@ const { fetchDataFromX } = require("./xDataScraper");
 // Discord.js versions ^13.0 require us to explicitly define client intents
 const {
   
-  
+  EmbedBuilder,
   AttachmentBuilder,
   
 
@@ -16,6 +16,8 @@ const {
 module.exports.xVideoModule = async (message,client) => {
 
   try{
+        const user = message.user;
+        const taggedUser = `${user.username}`;
         //Downloading video to our storage
         const videoUrl = message.options.getString('link');
         const firstReply=message.reply('Video Converting...');
@@ -23,9 +25,19 @@ module.exports.xVideoModule = async (message,client) => {
         const filePath = await fetchDataFromX(videoUrl);
         console.log(`Modüldeki filePath: ${filePath}`)
         const videoAttachment = new AttachmentBuilder(filePath)
+        const embedReply=new EmbedBuilder()
+        .setColor('#621A55') 
+        .setTitle(`${taggedUser} ur video ready to use ✅ `)
+        .setURL(videoUrl)
+        .setDescription(
+          'test :p',
+        )
+        .setTimestamp()
+	      .setFooter({ text: taggedUser, iconURL:user.displayAvatarURL() });
         console.log(videoAttachment)
         await message.editReply({
             content: 'Video Converted!',
+            embeds:[embedReply],
             files: [videoAttachment],
 
           })
