@@ -59,6 +59,9 @@ module.exports.fetchDataFromX = async (videoUrl) => {
       })
       console.log(embedVideoUrl)
       const downloadFolder = path.resolve('./Downloads')
+      if (!fs.existsSync(downloadFolder)) {
+        fs.mkdirSync(downloadFolder, { recursive: true });
+      }
       const filePath = `${uniqueFilename(downloadFolder, 'doppel')}.mp4`
       const videoStream = await axios.get(embedVideoUrl, {
         headers: headers,

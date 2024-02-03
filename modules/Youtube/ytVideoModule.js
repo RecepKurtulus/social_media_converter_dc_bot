@@ -30,6 +30,9 @@ module.exports.ytVideoModule = async (message,client) => {
 
         //Writing video to our storage
         const downloadFolder =path.resolve('./Downloads')
+        if (!fs.existsSync(downloadFolder)) {
+          fs.mkdirSync(downloadFolder, { recursive: true });
+        }
         const filePath = `${downloadFolder}/${videoTitle}.mp4`
         const writeStream = fs.createWriteStream(filePath)
         videoStream.pipe(writeStream)

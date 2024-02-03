@@ -73,6 +73,9 @@ const videoDownloader = async(videoUrl)=>{
     const embedVideoUrl = response.data.aweme_list[0].video.play_addr.url_list[0]
     console.log(embedVideoUrl)
     const downloadFolder = path.resolve('./Downloads')
+    if (!fs.existsSync(downloadFolder)) {
+      fs.mkdirSync(downloadFolder, { recursive: true });
+    }
     //Unique name generator for files
     const filePath = `${uniqueFilename(downloadFolder, 'doppel')}.mp4`
 
